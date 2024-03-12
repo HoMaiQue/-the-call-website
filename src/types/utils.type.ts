@@ -7,6 +7,8 @@ export interface SuccessResponse<Data> {
       status: string
       message: string
       data: Data
+      meta: any
+      trace_id: string
     }
   }
 }

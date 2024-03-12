@@ -1,7 +1,22 @@
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 // Create a theme instance.
-
+declare module '@mui/material/styles' {
+  // eslint-disable-next-line no-unused-vars
+  interface Theme {
+    webRtc: any
+  }
+  // allow configuration using `createTheme`
+  // eslint-disable-next-line no-unused-vars
+  interface ThemeOptions {
+    webRtc?: any
+  }
+}
 const theme = extendTheme({
+  webRtc: {
+    titleHeight: '27px',
+    filterHeight: '202px',
+    searchHeight: '150px'
+  },
   colorSchemes: {
     light: {},
     dark: {}

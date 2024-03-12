@@ -16,3 +16,19 @@ export function convertSecondsToHHMMSS(seconds: number): string {
 
   return `${hoursStr}:${minutesStr}:${secondsStr}`
 }
+
+export function removeEmptyValues(obj: { [key: string]: string }): { [key: string]: string } {
+  const newObj: { [key: string]: any } = {}
+
+  for (const key in obj) {
+    if (obj[key] !== '') {
+      newObj[key] = obj[key]
+    }
+  }
+
+  return newObj
+}
+export function convertDateFormat(inputDate: string): string {
+  const originalDate = new Date(inputDate)
+  return format(originalDate, 'yyyy-MM-dd HH:mm:ss')
+}

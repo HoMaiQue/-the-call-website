@@ -14,8 +14,12 @@ export interface CallHistoryResponse {
 export interface CallHistoryResQuest {
   date_start?: string
   date_end?: string
-  type?: 'outbound' | 'inbound'
-  status?: 'ANSWERED' | 'NO ANSWER' | 'MISSED' | 'FAILED' | 'BUSY'
-  limit: string 
-  offset: string 
+  type?: string
+  status?: string
+  limit: string
+  offset: string
 }
+
+export type GetRecordResponse = {
+  data: { ogg: string; wav: string }
+} | null
