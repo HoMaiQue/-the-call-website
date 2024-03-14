@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { endOfDay, format } from 'date-fns'
 
 export function formatDate(inputDate: string): string {
   const originalDate = new Date(inputDate)
@@ -31,4 +31,9 @@ export function removeEmptyValues(obj: { [key: string]: string }): { [key: strin
 export function convertDateFormat(inputDate: string): string {
   const originalDate = new Date(inputDate)
   return format(originalDate, 'yyyy-MM-dd HH:mm:ss')
+}
+export function convertDateFormatEndDay(inputDate: string): string {
+  const originalDate = new Date(inputDate)
+  const endDay = endOfDay(originalDate)
+  return format(endDay, 'yyyy-MM-dd HH:mm:ss')
 }

@@ -1,16 +1,22 @@
+import DeleteIcon from '@mui/icons-material/Delete'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 import { Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import TablePagination from '@mui/material/TablePagination'
 import { blue, green, grey, red } from '@mui/material/colors'
-import { DataGrid, GridActionsCellItem, GridCallbackDetails, GridColDef, GridRenderCellParams, GridRowParams, MuiEvent } from '@mui/x-data-grid'
-import React, { useContext, useEffect, useState } from 'react'
-import DeleteIcon from '@mui/icons-material/Delete'
-import ModalConfirm from './ModalConfirm'
+import { DataGrid, GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid'
 import { useMutation } from '@tanstack/react-query'
+import React, { useContext, useEffect, useState } from 'react'
+
 import { phoneBookApi } from '~/apis/phonebook.api'
 import { LIMIT } from '~/constants/page'
 import { AppContext } from '~/contexts/app.context'
+import { GetPhoneBookResponse } from '~/types/phonebook.type'
+import ModalCall from './ModalCall'
+import ModalConfirm from './ModalConfirm'
+import { CustomNoRowsOverlay } from '~/components/Overlay/Overlay'
+import { Voip24hModule } from 'voip24h-sip-gateway'
+
 const CallRow = ({ label }: { label: string }) => {
   return (
     <Box sx={{ display: 'flex', columnGap: 1, alignItems: 'center' }}>
@@ -25,11 +31,16 @@ const getPrivacyStrategies: any = {
 }
 interface DataTableProps {
   onToggle: () => void
+  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>
+  isSearch: boolean
 }
-const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle }) => {
-  const { phoneBookList, setPhoneBookList, setPageCount, pageCount, setContactId } = useContext(AppContext)
+const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle, setIsUpdate, isSearch }) => {
+  const { phoneBookList, setPhoneBookList, setPageCount, searchPhoneBook, pageCount, setPhoneBook, setContactId } =
+    useContext(AppContext)
 
   const [open, setOpen] = useState(false)
+  const [openCall, setOpenCall] = useState(false)
+
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -87,9 +98,17 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle }) => {
     handleToggle()
     setContactId(id)
   }
+  const handleToggleCall = () => {
+    setOpenCall((value) => !value)
+  }
+  const handleCall = (numberPhone: string) => {
+    handleToggleCall()
+    Voip24hModule.getInstance().call(numberPhone)
+  }
 
-  const handleRowClick = (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails) => {
-    console.log(params)
+  const handleRowClick = (params: GridRowParams) => {
+    setPhoneBook(params.row as GetPhoneBookResponse)
+    setIsUpdate(true)
     onToggle()
   }
   const columns: GridColDef[] = [
@@ -147,7 +166,8 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle }) => {
       headerAlign: 'center',
       align: 'center',
       headerClassName: 'header-table-grid',
-      getActions: ({ id }) => {
+      getActions: ({ id, row }) => {
+        const number_phone = row.number_phone
         return [
           <GridActionsCellItem
             icon={<LocalPhoneIcon />}
@@ -155,7 +175,7 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle }) => {
             sx={{
               color: green[500]
             }}
-            // onClick={handleClickPlay(id)}
+            onClick={() => handleCall(number_phone)}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
@@ -182,11 +202,12 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle }) => {
       <DataGrid
         sx={{ '& .MuiDataGrid-selectedRowCount': { visibility: 'hidden' } }}
         disableColumnMenu
-        rows={phoneBookList}
+        rows={isSearch ? searchPhoneBook : phoneBookList}
         columns={columns}
         hideFooter
         getRowId={(row) => row?.contact_id}
         onRowClick={handleRowClick}
+        slots={{ noRowsOverlay: CustomNoRowsOverlay }}
       />
       <TablePagination
         labelRowsPerPage={'Số hàng mỗi trang'}
@@ -203,6 +224,7 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle }) => {
         }}
       />
       <ModalConfirm open={open} onToggle={handleToggle} />
+      {openCall && <ModalCall open={openCall} onToggle={handleToggleCall} />}
     </Box>
   )
 }

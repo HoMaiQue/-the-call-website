@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react'
 import { authApi } from '~/apis/auth.api'
 import { switchboardApi } from '~/apis/switchboard.api'
 import { CallHistoryResQuest, CallHistoryResponse } from '~/types/switchboard.type'
-import { convertDateFormat } from '~/utils/format'
+import { convertDateFormat, convertDateFormatEndDay } from '~/utils/format'
 import TableCallHistory from './components/TableCallHistory'
 import { LIMIT } from '~/constants/page'
 import theme from '~/theme'
@@ -32,6 +32,7 @@ const Home = () => {
     limit: LIMIT,
     offset: '0'
   })
+
   const [pageCount, setPageCount] = useState<number>(0)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -51,7 +52,7 @@ const Home = () => {
         const totalData = data.data.data.response.meta.total
 
         setCallHistoryData(data.data.data.response.data)
-        setPageCount(totalData )
+        setPageCount(totalData)
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,6 +129,7 @@ const Home = () => {
           Danh bạ
         </Button>
       </Box>
+
       <Box
         sx={{
           mt: 2,
@@ -145,7 +147,7 @@ const Home = () => {
         </Box>
         <Box sx={{ display: 'flex ', columnGap: '20px', pb: 2, alignItems: 'center' }}>
           <DatePicker
-            // value={dayjs()}
+          
             disableFuture
             slotProps={{
               textField: {
@@ -168,7 +170,7 @@ const Home = () => {
           />
 
           <DatePicker
-            // value={dayjs()}
+            
             disableFuture
             slotProps={{
               textField: {
@@ -185,7 +187,7 @@ const Home = () => {
             label='Ngày kết thúc'
             format='DD-MM-YYYY'
             onChange={(value: Dayjs | null) => {
-              const date_end = convertDateFormat(value?.toISOString() as string)
+              const date_end = convertDateFormatEndDay(value?.toISOString() as string)
               setFilter((data) => ({ ...data, date_end }))
             }}
           />

@@ -4,29 +4,18 @@ import { Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import TablePagination from '@mui/material/TablePagination'
-import { blue, green, grey, purple, red, yellow } from '@mui/material/colors'
+import { blue, grey, purple, red } from '@mui/material/colors'
 import { DataGrid, GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowId } from '@mui/x-data-grid'
+import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
+import { switchboardApi } from '~/apis/switchboard.api'
+import { getColorStrategies, getStatusStrategies } from '~/constants/page'
 import { CallHistoryResponse } from '~/types/switchboard.type'
 import { convertSecondsToHHMMSS, formatDate } from '~/utils/format'
 import ModalPlay from './ModalPlay'
-import { useMutation } from '@tanstack/react-query'
-import { switchboardApi } from '~/apis/switchboard.api'
-import { toast } from 'react-toastify'
-const getStatusStrategies: any = {
-  ANSWERED: 'Trả lời',
-  'NO ANSWER': 'Không trả lời',
-  MISSED: 'Gọi nhỡ',
-  FAILED: 'Gọi lỗi',
-  BUSY: 'Máy bận'
-}
-const getColorStrategies: any = {
-  ANSWERED: green[500],
-  'NO ANSWER': grey[500],
-  MISSED: red[500],
-  FAILED: purple[500],
-  BUSY: yellow[500]
-}
+import { CustomNoRowsOverlay } from '~/components/Overlay/Overlay'
+
 const getColorTypeStrategies: any = {
   inbound: red[500],
   outbound: purple[500]
@@ -236,6 +225,7 @@ const TableCallHistory: React.FC<DataTableProps> = ({
       }}
     >
       <DataGrid
+        slots={{ noRowsOverlay: CustomNoRowsOverlay }}
         sx={{ '& .MuiDataGrid-selectedRowCount': { visibility: 'hidden' } }}
         disableColumnMenu
         rows={callHistoryList}
