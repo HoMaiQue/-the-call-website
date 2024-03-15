@@ -10,11 +10,11 @@ import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { switchboardApi } from '~/apis/switchboard.api'
+import { CustomNoRowsOverlay } from '~/components/Overlay/Overlay'
 import { getColorStrategies, getStatusStrategies } from '~/constants/page'
 import { CallHistoryResponse } from '~/types/switchboard.type'
 import { convertSecondsToHHMMSS, formatDate } from '~/utils/format'
 import ModalPlay from './ModalPlay'
-import { CustomNoRowsOverlay } from '~/components/Overlay/Overlay'
 
 const getColorTypeStrategies: any = {
   inbound: red[500],

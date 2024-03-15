@@ -71,7 +71,11 @@ const Home = () => {
   const handleClickFilter = () => {
     callHistory.mutate(filter, {
       onSuccess: (data) => {
-        setCallHistoryData(data.data.data.response.data)
+        if (data.data.data.response.data) {
+          setCallHistoryData(data.data.data.response.data)
+        } else {
+          setCallHistoryData([])
+        }
       }
     })
   }

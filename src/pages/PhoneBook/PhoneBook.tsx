@@ -167,7 +167,7 @@ const PhoneBook = () => {
       >
         <TablePhoneBook onToggle={handleToggle} setIsUpdate={setIsUpdate} isSearch={isSearch} />
         <DrawerPhoneBook anchor={open} onToggle={handleToggle}>
-          <PhoneBookForm onToggle={handleToggle} isUpdate={isUpdate} />
+          <PhoneBookForm onToggle={handleToggle} isUpdate={isUpdate} isSearch={isSearch} />
         </DrawerPhoneBook>
       </Box>
     </Box>

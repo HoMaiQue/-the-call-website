@@ -20,8 +20,9 @@ const loginSchema = schema.pick(['full_name', 'number_phone'])
 interface PhoneBookFormProps {
   onToggle: () => void
   isUpdate: boolean
+  isSearch: boolean
 }
-const PhoneBookForm: React.FC<PhoneBookFormProps> = ({ onToggle, isUpdate }) => {
+const PhoneBookForm: React.FC<PhoneBookFormProps> = ({ isSearch, onToggle, isUpdate }) => {
   const {
     register,
     setError,
@@ -31,7 +32,8 @@ const PhoneBookForm: React.FC<PhoneBookFormProps> = ({ onToggle, isUpdate }) => 
   } = useForm<FormData>({
     resolver: yupResolver(loginSchema)
   })
-  const { setPhoneBookList, setPageCount, phoneBook } = useContext(AppContext)
+  const { setPhoneBookList, setPageCount, searchPhoneBook, setSearchPhoneBook, phoneBook, phoneBookList } =
+    useContext(AppContext)
   const [callHistoryUser, setCallHistoryUser] = useState<CallHistoryResponse[]>([])
 
   const callHistoryByPhoneBookId = useMutation({
@@ -83,17 +85,33 @@ const PhoneBookForm: React.FC<PhoneBookFormProps> = ({ onToggle, isUpdate }) => 
         contact_id: phoneBook?.contact_id as string
       }
       updatePhoneBook.mutate(newData, {
-        onSuccess: (_) => {
-          phoneBookMutation.mutate(
-            { limit: LIMIT, offset: '0' },
-            {
-              onSuccess: (data) => {
-                const totalData = data.data.data.response.meta.total
-                setPhoneBookList(data.data.data.response.data)
-                setPageCount(totalData)
-              }
-            }
-          )
+        onSuccess: (data) => {
+          if (isSearch) {
+            const newPhoneBookSearchList = [...searchPhoneBook]
+            const dataNewUpdate = newPhoneBookSearchList.findIndex(
+              (newPhone) => newPhone.contact_id === phoneBook?.contact_id
+            )
+            newPhoneBookSearchList[dataNewUpdate] = data.data.data.response.data[0]
+            setSearchPhoneBook(newPhoneBookSearchList)
+          } else {
+            const newPhoneBookList = [...phoneBookList]
+            const dataNewUpdate = newPhoneBookList.findIndex(
+              (newPhone) => newPhone.contact_id === phoneBook?.contact_id
+            )
+            newPhoneBookList[dataNewUpdate] = data.data.data.response.data[0]
+            setPhoneBookList(newPhoneBookList)
+          }
+
+          // phoneBookMutation.mutate(
+          //   { limit: LIMIT, offset: '0' },
+          //   {
+          //     onSuccess: (data) => {
+          //       const totalData = data.data.data.response.meta.total
+          //       setPhoneBookList(data.data.data.response.data)
+          //       setPageCount(totalData)
+          //     }
+          //   }
+          // )
           toast.success('Cập nhật danh bạ thành công')
           onToggle()
         }

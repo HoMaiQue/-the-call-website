@@ -103,6 +103,7 @@ const ModalCall: React.FC<ModalCall> = ({ open, onToggle }) => {
   // }
   const handleActionSubmit = () => {
     setIsTransfer(false)
+    onToggle()
     // setSendDtmf(true)
     if (isTransfer) {
       voip24.transfer(number)
