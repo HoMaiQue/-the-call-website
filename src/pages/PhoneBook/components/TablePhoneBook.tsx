@@ -8,14 +8,13 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridRenderCellParams, GridRo
 import { useMutation } from '@tanstack/react-query'
 import React, { useContext, useEffect, useState } from 'react'
 
+import { Voip24hModule } from 'voip24h-sip-gateway'
 import { phoneBookApi } from '~/apis/phonebook.api'
+import { CustomNoRowsOverlay } from '~/components/Overlay/Overlay'
 import { LIMIT } from '~/constants/page'
 import { AppContext } from '~/contexts/app.context'
 import { GetPhoneBookResponse } from '~/types/phonebook.type'
-import ModalCall from './ModalCall'
 import ModalConfirm from './ModalConfirm'
-import { CustomNoRowsOverlay } from '~/components/Overlay/Overlay'
-import { Voip24hModule } from 'voip24h-sip-gateway'
 
 const CallRow = ({ label }: { label: string }) => {
   return (
@@ -35,11 +34,18 @@ interface DataTableProps {
   isSearch: boolean
 }
 const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle, setIsUpdate, isSearch }) => {
-  const { phoneBookList, setPhoneBookList, setPageCount, searchPhoneBook, pageCount, setPhoneBook, setContactId } =
-    useContext(AppContext)
+  const {
+    phoneBookList,
+    setPhoneBookList,
+    setPageCount,
+    handleToggleCall,
+    searchPhoneBook,
+    pageCount,
+    setPhoneBook,
+    setContactId
+  } = useContext(AppContext)
 
   const [open, setOpen] = useState(false)
-  const [openCall, setOpenCall] = useState(false)
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -98,9 +104,7 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle, setIsUpdate, isSea
     handleToggle()
     setContactId(id)
   }
-  const handleToggleCall = () => {
-    setOpenCall((value) => !value)
-  }
+
   const handleCall = (numberPhone: string) => {
     handleToggleCall()
     Voip24hModule.getInstance().call(numberPhone)
@@ -224,7 +228,6 @@ const TablePhoneBook: React.FC<DataTableProps> = ({ onToggle, setIsUpdate, isSea
         }}
       />
       <ModalConfirm open={open} onToggle={handleToggle} />
-      {openCall && <ModalCall open={openCall} onToggle={handleToggleCall} />}
     </Box>
   )
 }

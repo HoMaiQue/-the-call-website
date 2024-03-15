@@ -12,6 +12,9 @@ interface AppContextInterface {
   setPhoneBook: React.Dispatch<React.SetStateAction<GetPhoneBookResponse | null>>
   searchPhoneBook: GetPhoneBookResponse[]
   setSearchPhoneBook: React.Dispatch<React.SetStateAction<GetPhoneBookResponse[]>>
+
+  openCall: boolean
+  handleToggleCall: () => void
 }
 
 const initialValueAppContext: AppContextInterface = {
@@ -24,7 +27,9 @@ const initialValueAppContext: AppContextInterface = {
   phoneBook: null,
   setPhoneBook: () => null,
   searchPhoneBook: [],
-  setSearchPhoneBook: () => null
+  setSearchPhoneBook: () => null,
+  openCall: false,
+  handleToggleCall: () => null
 }
 export const AppContext = createContext<AppContextInterface>(initialValueAppContext)
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
@@ -33,7 +38,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [searchPhoneBook, setSearchPhoneBook] = useState<GetPhoneBookResponse[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
   const [contactId, setContactId] = useState<string>('')
-
+  const [openCall, setOpenCall] = useState(false)
+  const handleToggleCall = () => {
+    setOpenCall((value) => !value)
+  }
   const value = {
     phoneBookList,
     setPhoneBookList,
@@ -44,7 +52,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     phoneBook,
     setPhoneBook,
     searchPhoneBook,
-    setSearchPhoneBook
+    setSearchPhoneBook,
+
+    openCall,
+    handleToggleCall
   }
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

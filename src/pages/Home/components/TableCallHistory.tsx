@@ -78,7 +78,7 @@ const TableCallHistory: React.FC<DataTableProps> = ({
       width: 160,
       sortable: false,
       headerAlign: 'center',
-      align: 'center',
+      align: 'left',
       headerClassName: 'header-table-grid',
       renderCell: (params: GridRenderCellParams<any, Date>) => {
         return <CallRow label={params.row.caller}></CallRow>
@@ -90,7 +90,7 @@ const TableCallHistory: React.FC<DataTableProps> = ({
       width: 150,
       sortable: false,
       headerAlign: 'center',
-      align: 'center',
+      align: 'left',
       headerClassName: 'header-table-grid',
       renderCell: (params: GridRenderCellParams<any, Date>) => {
         return <CallRow label={params.row.callee ? params.row.callee : '-----'}></CallRow>
