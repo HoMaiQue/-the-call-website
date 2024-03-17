@@ -42,7 +42,7 @@ function App() {
   const routeElement = useRouteElements()
   return (
     <QueryClientProvider client={queryClient}>
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      <ReactQueryDevtools initialIsOpen={false} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         {routeElement}
         {openCall && <ModalCall open={openCall} onToggle={handleToggleCall} />}
