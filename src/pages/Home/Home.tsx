@@ -127,7 +127,7 @@ const Home = () => {
           sx={{ fontSize: 20, fontWeight: 'bold', color: grey[500], height: theme.webRtc.titleHeight }}
           variant='h1'
         >
-          Lịch sử cuộc gọi
+          Lịch sử
         </Typography>
         <Button variant='contained' onClick={() => navigate('/phone-book')}>
           Danh bạ
